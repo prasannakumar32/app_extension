@@ -1,0 +1,18 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/config.2.0.schema.json",
+  "version": "2.0",
+  "bundles": {
+    "leave-approval-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/leaveApproval/LeaveApprovalWebPart.js",
+          "manifest": "./src/webparts/leaveApproval/LeaveApprovalWebPart.manifest.json"
+        }
+      ]
+    }
+  },
+  "externals": {},
+  "localizedResources": {
+    "LeaveApprovalWebPartStrings": "lib/webparts/leaveApproval/loc/{locale}.js"
+  }
+}

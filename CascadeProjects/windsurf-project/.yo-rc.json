@@ -1,0 +1,19 @@
+{
+  "@microsoft/generator-sharepoint": {
+    "useGulp": false,
+    "plusBeta": false,
+    "isCreatingSolution": true,
+    "nodeVersion": "20.19.6",
+    "sdksVersions": {},
+    "version": "1.22.2",
+    "libraryName": "employee-leave",
+    "libraryId": "0cfc445d-5dc3-49bf-b75f-b4178b61a62b",
+    "environment": "spo",
+    "packageManager": "npm",
+    "solutionName": "employee leave",
+    "solutionShortDescription": "employee leave description",
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "componentType": "webpart"
+  }
+}

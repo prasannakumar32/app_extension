@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    "target": "ES2015",
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "allowJs": true,
+    "checkJs": false,
+    "jsx": "react",
+    "declaration": false,
+    "outDir": "./lib",
+    "baseUrl": "./",
+    "paths": {
+      "@microsoft/sp-core-library": ["node_modules/@microsoft/sp-core-library"],
+      "@microsoft/sp-property-pane": ["node_modules/@microsoft/sp-property-pane"],
+      "@microsoft/sp-webpart-base": ["node_modules/@microsoft/sp-webpart-base"],
+      "@microsoft/sp-component-base": ["node_modules/@microsoft/sp-component-base"],
+      "@microsoft/sp-http": ["node_modules/@microsoft/sp-http"],
+      "@fluentui/react": ["node_modules/@fluentui/react"]
+    }
+  },
+  "include": [
+    "src/**/*.js"
+  ],
+  "exclude": [
+    "node_modules",
+    "lib",
+    "dist",
+    "sharepoint/solution"
+  ]
+}
