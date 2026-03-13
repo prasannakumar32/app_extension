@@ -2,27 +2,214 @@
 
 .app {
   .top {
-      height:60px;
-      text-align:center;
-      line-height:2.5;
-      font-weight:bold;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background-color: $ms-color-themePrimary;
-      color: $ms-color-white;
-
+    height: auto;
+    min-height: 80px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end; // Move to right
+    justify-content: center;
+    background: linear-gradient(135deg, $ms-color-themePrimary 0%, $ms-color-themeDark 100%);
+    color: $ms-color-white;
+    padding: 20px 40px; // Add right padding
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.15);
+    position: relative;
+    z-index: 10;
   }
 
-  .bottom {
-      height:40px;
-      text-align:center;
-      line-height:2.5;
-      font-weight:bold;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background-color: $ms-color-themePrimary;
-      color: $ms-color-white;
+  .searchContainer {
+    width: 100%;
+    max-width: 450px; // Narrower for corner placement
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    animation: fadeInRight 0.5s ease-out;
+  }
+
+  .searchBox {
+    display: flex;
+    align-items: center; // Ensure items within are centered
+    width: 100%;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(8px);
+    border-radius: 50px;
+    padding: 4px 4px 4px 18px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+
+    &:focus-within {
+      background: rgba(255, 255, 255, 0.25);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+      border-color: rgba(255, 255, 255, 0.5);
+      transform: translateY(-1px);
+    }
+  }
+
+  .searchInput {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 15px;
+    outline: none;
+    padding: 8px 0;
+    font-weight: 400;
+
+    &::placeholder {
+      color: rgba(255, 255, 255, 0.7);
+    }
+  }
+
+  .clearButton {
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.6);
+    cursor: pointer;
+    font-size: 14px;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    margin-right: 4px;
+
+    &:hover {
+      color: white;
+      transform: scale(1.1);
+    }
+  }
+
+  .searchButton {
+    background: white;
+    color: $ms-color-themePrimary;
+    border: none;
+    border-radius: 50px;
+    padding: 8px 20px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+
+    &:hover {
+      background: $ms-color-themeLighterAlt;
+      transform: scale(1.02);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+  }
+
+  .resultsContainer {
+    width: 100%;
+    background: white;
+    color: #333;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    max-height: 500px;
+    display: none;
+    animation: slideUp 0.3s ease-out;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 12px;
+    z-index: 100;
+    overflow: hidden; // Round corners for children
+    border: 1px solid rgba(0, 0, 0, 0.05);
+  }
+
+  .resultsHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 20px;
+    border-bottom: 1px solid #eee;
+    background: #fcfcfc;
+  }
+
+  .resultsTitle {
+    font-size: 14px;
+    font-weight: 700;
+    color: #444;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .closeButton {
+    background: transparent;
+    border: none;
+    color: #666;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    border-radius: 4px;
+
+    &:hover {
+      background: #eee;
+      color: #000;
+    }
+  }
+
+  .resultsList {
+    max-height: 400px;
+    overflow-y: auto;
+  }
+
+  .resultItem {
+    padding: 12px 20px;
+    border-bottom: 1px solid #f0f0f0;
+    transition: background 0.2s ease;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &:hover {
+      background: #f8fbff;
+    }
+
+    a {
+      text-decoration: none;
+      color: $ms-color-themePrimary;
+      font-size: 15px;
+      font-weight: 600;
+      display: block;
+      margin-bottom: 3px;
+    }
+
+    .resultDesc {
+      font-size: 12px;
+      color: #666;
+      line-height: 1.4;
+    }
+  }
+}
+
+// Animations
+@keyframes fadeInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
