@@ -3,7 +3,7 @@
     <CustomAction
         Title="HelloWorld"
         Location="ClientSideExtension.ApplicationCustomizer"
-        ClientSideComponentId="7c2cfa3e-8cbe-4d78-9697-de8167432472"
-        ClientSideComponentProperties="{&quot;testMessage&quot;:&quot;Test message&quot;}">
+        ClientSideComponentId="05966ad1-55c7-47f6-9ff5-4fee8bff838a"
+        ClientSideComponentProperties="{&quot;Top&quot;:&quot;Top area of the page&quot;,&quot;Bottom&quot;:&quot;Bottom area in the page&quot;}">
     </CustomAction>
 </Elements>
