@@ -12,11 +12,6 @@ import { SPHttpClient, SPHttpClientResponse } from '@microsoft/sp-http';
 
 const LOG_SOURCE: string = 'HelloWorldApplicationCustomizer';
 
-/**
- * If your command set uses the ClientSideComponentProperties JSON input,
- * it will be deserialized into the BaseExtension.properties object.
- * You can define an interface to describe it.
- */
 export interface IHelloWorldApplicationCustomizerProperties {
   Top: string;
   Bottom: string;
@@ -46,6 +41,8 @@ export default class HelloWorldApplicationCustomizer
 
   public onInit(): Promise<void> {
     Log.info(LOG_SOURCE, `Initialized ${strings.Title}`);
+    // Load and run test-sharepoint.js from SiteAssets
+    this._loadTestScript();
 
     // Wait for the placeholders to be created (or handle them being changed) and then
     // render.
@@ -55,6 +52,84 @@ export default class HelloWorldApplicationCustomizer
     this._renderPlaceHolders();
 
     return Promise.resolve();
+  }
+
+  private _loadTestScript(): void {
+    const folderServerRelativeUrl = `${this.context.pageContext.web.serverRelativeUrl}/SiteAssets/JS`;
+    const apiUrl = `${this.context.pageContext.web.absoluteUrl}/_api/web/GetFolderByServerRelativeUrl('${folderServerRelativeUrl}')/Files`;
+
+    this.context.spHttpClient.get(apiUrl, SPHttpClient.configurations.v1)
+      .then((response: SPHttpClientResponse) => {
+        if (!response.ok) {
+          throw new Error(`Failed to fetch files. Status: ${response.status} - ${response.statusText}`);
+        }
+        return response.json();
+      })
+      .then((data: any) => {
+        if (data && data.value && data.value.length > 0) {
+          data.value.forEach((file: any) => {
+            // We load JS files, but user also specifically asked to "display the logs in browser console"
+            if (file.Name.toLowerCase().endsWith('.js') || file.Name.toLowerCase().endsWith('.txt') || file.Name.toLowerCase().endsWith('.log')) {
+              const scriptUrl = `${this.context.pageContext.web.absoluteUrl}/SiteAssets/JS/${file.Name}`;
+              
+              if (file.Name.toLowerCase().endsWith('.js')) {                
+                // In modern SharePoint, setting window._spPageContextInfo globally can break Microsoft's modern UI (e.g. SuiteNav).
+                // Instead, expose it under a custom variable for custom scripts.
+                if (!(window as any).customPageContext && this.context.pageContext.legacyPageContext) {
+                  (window as any).customPageContext = this.context.pageContext.legacyPageContext;
+                }
+                // Protect against double loading same script in SharePoint dev
+                const scriptId = `custom-scpt-${file.Name.replace(/[^a-zA-Z0-9]/g, '')}`;
+                if (!document.getElementById(scriptId)) {
+                  // Add random query param to bust cache
+                  const cacheBuster = new Date().getTime();
+                  const scriptUrlWithCacheBust = `${scriptUrl}?v=${cacheBuster}`;
+
+                  const script = document.createElement('script');
+                  script.type = 'text/javascript';
+                  script.id = scriptId;
+                  script.src = scriptUrlWithCacheBust;
+                  
+                  script.onload = () => {
+                  };
+                  script.onerror = (error) => {
+                    console.error(`❌ Failed to load script ${file.Name}:`, error);
+                  };
+                  
+                  document.head.appendChild(script);
+                }
+              } else {
+                // Fetch the content of the file and display it as logs in the console
+                // Add random query param to bust cache
+                const cacheBuster = new Date().getTime();
+                const scriptUrlWithCacheBust = `${scriptUrl}?v=${cacheBuster}`;
+                this._displayLogCodeInConsole(scriptUrlWithCacheBust, file.Name);
+              }
+            }
+          });
+        } else {
+        }
+      })
+      .catch((error: any) => {
+         console.error(`❌ Error fetching log scripts from SiteAssets/JS:`, error);
+      });
+  }
+
+  private _displayLogCodeInConsole(fileUrl: string, fileName: string): void {
+    // We are using a relative/absolute URL to fetch the text content
+    this.context.spHttpClient.get(fileUrl, SPHttpClient.configurations.v1)
+      .then((response: SPHttpClientResponse) => {
+        if (response.ok) {
+           return response.text();
+        }
+        return null;
+      })
+      .then((text: string | null) => {
+        if (text) {
+        }
+      })
+      .catch((err) => {
+      });
   }
 
   private _renderPlaceHolders(): void {
